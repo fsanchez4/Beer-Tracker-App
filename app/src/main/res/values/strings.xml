@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Beer Tracker</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="beerName_hint">Beer Name</string>
+    <string name="breweryName_hint">Brewery Name</string>
+    <string name="aBv_hint">Alcohol by Volume</string>
+    <string name="beerType_hint">Type</string>
+    <string name="dash">--</string>
+
+    <string-array name="beerTypes_array">
+        <item>Pale Lager &amp; Pilsner</item>
+        <item>Dark Lager</item>
+        <item>German Bock</item>
+        <item>Brown Ale</item>
+        <item>Pale Ale</item>
+        <item>IPA</item>
+        <item>Porter</item>
+        <item>Stout</item>
+        <item>Belgian Style</item>
+        <item>Wheat</item>
+        <item>Sour Ale</item>
+    </string-array>
+
+    <string-array name="breweries_array">
+        <item>Abide</item>
+        <item>Atlanta Brewing Co.</item>
+        <item>Creature Comforts</item>
+        <item>Eventide</item>
+        <item>Macon Beer Co.</item>
+        <item>Orpheus</item>
+        <item>Sweetwater</item>
+        <item>Three Taverns</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="company_details">1234 Drink Responsibly Lane\nAtlanta, GA 30313</string>
+
+</resources>

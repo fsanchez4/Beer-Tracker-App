@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/search_beer_action"
+        android:icon="@drawable/menu_search_icon"
+        android:title="Search"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/add_beer_action"
+        android:title="Add/Update"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_beer_action"
+        android:title="Delete All"
+        app:showAsAction="never" />
+
+</menu>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.csc4360.beertracker.AddBeer">
+    <!--android:theme="@style/Theme.MaterialComponents"-->
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/appToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/Theme.AppCompat.Light"/>
+
+    <TextView
+        android:id="@+id/add_beer_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="Add Beer"
+        android:textAlignment="center"
+        android:textColor="@color/textColorBlack"
+        android:textSize="24sp" />
+
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/textInput_layout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/beerName_hint"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:outlineSpotShadowColor="@color/colorPrimaryDark"
+        android:theme="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
+
+
+    <!--<androidx.appcompat.widget.AppCompatEditText-->
+        <!--android:id="@+id/textInput_layout2"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="@string/breweryName_hint"/>-->
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/textInput_layout3"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/aBv_hint"/>
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/breweryOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints="@string/breweryName_hint"/>
+
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/beerType_spinner"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="@string/beerType_hint"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/save_bn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="Submit" />
+
+</LinearLayout>
