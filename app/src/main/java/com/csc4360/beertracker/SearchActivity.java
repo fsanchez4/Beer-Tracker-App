@@ -1,7 +1,8 @@
 package com.csc4360.beertracker;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.DialogInterface;
+import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -73,8 +74,26 @@ public class SearchActivity extends AppCompatActivity implements NavigationHost 
                 return true;
 
             case R.id.delete_beer_action:
-                // User chose the "Delete" action
-                MainActivity.appDatabase.beerDao().deleteAll();
+                // User chose the "Delete" action with dialog pop up
+                AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);
+
+                builder.setTitle("Warning!");
+                builder.setMessage("Are you sure you want to delete everything?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        MainActivity.appDatabase.beerDao().deleteAll();
+                    }
+                });
+                builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
 
             default:
