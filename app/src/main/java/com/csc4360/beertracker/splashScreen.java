@@ -23,6 +23,7 @@ public class splashScreen extends AppCompatActivity {
                 splashScreen.this.finish();
             }
         },5000);
+        
     }
 
     //method to open the main activity page
