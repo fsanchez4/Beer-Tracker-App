@@ -1,8 +1,9 @@
 package com.csc4360.beertracker;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.content.DialogInterface;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -74,7 +75,8 @@ public class SearchActivity extends AppCompatActivity implements NavigationHost 
                 return true;
 
             case R.id.delete_beer_action:
-                // User chose the "Delete" action with dialog pop up
+                // User chose the "Delete" action
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);
 
                 builder.setTitle("Warning!");

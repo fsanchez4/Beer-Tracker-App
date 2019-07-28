@@ -1,6 +1,7 @@
 package com.csc4360.beertracker;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telecom.Call;
@@ -150,7 +152,26 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
             case R.id.delete_beer_action:
                 // User chose the "Delete" action
-                appDatabase.beerDao().deleteAll();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setTitle("Warning!");
+                builder.setMessage("Are you sure you want to delete everything?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        appDatabase.beerDao().deleteAll();
+                    }
+                });
+                builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
 
             default:
@@ -160,6 +181,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         }
     }
+
+
 
     @Override
     public void onBeerClick(int position) {
