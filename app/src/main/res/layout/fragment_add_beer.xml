@@ -78,11 +78,21 @@
         android:autofillHints="@string/beerType_hint"
         />
 
+    <RatingBar
+        android:id="@+id/userRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:numStars="5"
+        android:stepSize="0.5"
+        android:layout_gravity="center" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/save_bn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="Submit" />
+        android:text="Submit"
+        />
 
 </LinearLayout>
