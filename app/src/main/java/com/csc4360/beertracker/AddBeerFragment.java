@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class AddBeerFragment extends Fragment {
     private Spinner brewerySpinner;
     private Spinner beerType_spinner;
     private Button submitButton;
+    private RatingBar rate;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class AddBeerFragment extends Fragment {
         abvTextInput = view.findViewById(R.id.textInput_layout3);
         beerType_spinner = view.findViewById(R.id.beerType_spinner);
         submitButton = view.findViewById(R.id.save_bn);
+        rate = view.findViewById(R.id.userRating);
+
 
         submitButton.setOnClickListener(new View.OnClickListener(){
 
@@ -53,6 +57,10 @@ public class AddBeerFragment extends Fragment {
                 String brewery_db = brewerySpinner.getSelectedItem().toString();
                 String abv_db = abvTextInput.getText().toString();
                 String type_db = beerType_spinner.getSelectedItem().toString();
+                double rating_db = rate.getRating();
+
+                // TEST: checking if rating value is working
+                Log.d("*** USER RATING: ", "Rating for beer: " + rating_db);
 
                 // New beer object
                 Beer beer = new Beer(name_db,brewery_db,type_db,abv_db);
@@ -69,6 +77,7 @@ public class AddBeerFragment extends Fragment {
                 abvTextInput.setText("");
                 brewerySpinner.setSelection(0);
                 beerType_spinner.setSelection(0);
+                rate.setRating(0);
 
             }
         });
