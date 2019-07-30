@@ -28,8 +28,10 @@ public interface BreweryDao {
     @Query("SELECT * FROM breweries WHERE brewery_name=:breweryName")
     Brewery getBrewery(String breweryName);
 
-//    @Query("SELECT * FROM breweries")
+    @Query("SELECT brewery_address FROM breweries")
+    String[] getAllAddresses();
 //    List<String> getAllAddresses();
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Brewery brewery);
