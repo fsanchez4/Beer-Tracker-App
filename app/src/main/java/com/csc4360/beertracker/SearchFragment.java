@@ -4,6 +4,7 @@ package com.csc4360.beertracker;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,6 +55,11 @@ public class SearchFragment extends Fragment {
         recyclerView = view.findViewById(R.id.search_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         recyclerView.setHasFixedSize(true);
+
+        // RecyclerView divider
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         materialSearchBar = view.findViewById(R.id.s_bar);
         materialSearchBar.setHint("Search");

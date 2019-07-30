@@ -6,11 +6,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.csc4360.beertracker.Controller.RecyclerViewAdapter;
 import com.csc4360.beertracker.DatabaseModel.AppDatabase;
 import com.csc4360.beertracker.DatabaseModel.Beer;
 import com.csc4360.beertracker.DatabaseModel.BeerTypes;
@@ -25,16 +27,28 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class DetailsFragment extends Fragment {
 
+    private static final String TAG = "DetailsFragment.beerId";
+
     private Beer mBeer;
     private Brewery mBrewery;
     private BeerTypes mBeerType;
+    public RecyclerViewAdapter adapter;
 
-    public static DetailsFragment newInstance(int beerId) {
-        // Required empty public constructor
+//    public static DetailsFragment newInstance(int beerId) {
+//        // Required empty public constructor
+//
+//        DetailsFragment fragment = new DetailsFragment();
+//        Bundle args = new Bundle();
+//        args.putInt("beer_id", beerId);
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
+
+    public static DetailsFragment newInstance(String beerName) {
 
         DetailsFragment fragment = new DetailsFragment();
         Bundle args = new Bundle();
-        args.putInt("beer_id", beerId);
+        args.putString("beer_name", beerName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,14 +56,22 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int beerId = 1;
+//        int beerId = 1;
+//
+//        if (getArguments() != null) {
+//            beerId = getArguments().getInt("beer_id");
+//        }
+
+        String beerName = "";
 
         if (getArguments() != null) {
-            beerId = getArguments().getInt("beer_id");
+            beerName = getArguments().getString("beer_name");
         }
 
+        Log.d(TAG, "onCreate : " + beerName);
+
         try {
-            mBeer = MainActivity.appDatabase.beerDao().getBeer(beerId);
+            mBeer = MainActivity.appDatabase.beerDao().getBeerByStringName(beerName);
             System.out.println(mBeer.getName());
             mBrewery = MainActivity.appDatabase.breweryDao().getBrewery(mBeer.getBrewery());
             System.out.println(mBrewery.getBreweryName());

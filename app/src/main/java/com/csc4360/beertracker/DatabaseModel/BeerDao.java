@@ -19,11 +19,23 @@ public interface BeerDao {
     @Query("SELECT beer_name FROM beers")
     List<String> getBeerNames();
 
+    @Query("SELECT beer_mfg FROM beers")
+    List<String> getBreweryNames();
+
+    @Query("SELECT beer_type FROM beers")
+    List<String> getBeerTypes();
+
+    @Query("SELECT alcohol_content FROM beers")
+    List<String> getBeerABVs();
+
     @Query("SELECT * FROM beers WHERE beer_name=:name")
     List<Beer> getBeerByName(String name);
 
     @Query("SELECT * FROM beers WHERE beer_id=:beerId")
     Beer getBeer(int beerId);
+
+    @Query("SELECT * FROM beers WHERE beer_name=:name")
+    Beer getBeerByStringName(String name);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Beer beer);

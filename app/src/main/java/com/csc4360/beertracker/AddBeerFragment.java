@@ -20,10 +20,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.csc4360.beertracker.DatabaseModel.AppDatabase;
 import com.csc4360.beertracker.DatabaseModel.Beer;
 
 
 public class AddBeerFragment extends Fragment {
+
+    public static AppDatabase appDatabase;
 
     private EditText beerTextInput;
     // private EditText breweryTextInput;
@@ -59,7 +62,8 @@ public class AddBeerFragment extends Fragment {
 
                 // DB add
                 MainActivity.appDatabase.beerDao().insert(beer);
-                MainActivity.adapter.notifyDataSetChanged();
+                int position = MainActivity.appDatabase.beerDao().getBeerNames().size();
+                MainActivity.adapter.notifyItemInserted(position);
 
                 Toast.makeText(getActivity(), "Beer added successfully", Toast.LENGTH_LONG)
                         .show();
