@@ -11,9 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.csc4360.beertracker.DatabaseModel.AppDatabase;
+import com.csc4360.beertracker.DatabaseModel.Beer;
+import com.csc4360.beertracker.MainActivity;
 import com.csc4360.beertracker.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -21,11 +25,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private static final String TAG = "RecyclerViewAdapter";
 
+
     private ArrayList<String> beerNames;
     private ArrayList<String> breweryNames;
     private ArrayList<String> beerTypes;
     private ArrayList<String> aBv;
     private OnBeerListener mOnBeerListener;
+
 
     public RecyclerViewAdapter(ArrayList<String> beerNames, ArrayList<String> breweryNames,
                                ArrayList<String> beerTypes, ArrayList<String> aBv,
@@ -43,11 +49,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public RecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_list_beer, parent,
                 false);
+
         return new ViewHolder(view, mOnBeerListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
+
 
         holder.beer.setText(beerNames.get(position));
         holder.brewery.setText(breweryNames.get(position));
@@ -84,6 +92,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         @Override
         public void onClick(View view) {
             Log.d(TAG, "adapter position." + getAdapterPosition());
+
             onBeerListener.onBeerClick(getAdapterPosition());
         }
     }
@@ -92,4 +101,43 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         void onBeerClick(int position);
     }
 
+    public ArrayList<String> getBeerNames() {
+        return beerNames;
+    }
+
+    public void setBeerNames(ArrayList<String> beerNames) {
+        this.beerNames = beerNames;
+    }
+
+    public ArrayList<String> getBreweryNames() {
+        return breweryNames;
+    }
+
+    public void setBreweryNames(ArrayList<String> breweryNames) {
+        this.breweryNames = breweryNames;
+    }
+
+    public ArrayList<String> getBeerTypes() {
+        return beerTypes;
+    }
+
+    public void setBeerTypes(ArrayList<String> beerTypes) {
+        this.beerTypes = beerTypes;
+    }
+
+    public ArrayList<String> getaBv() {
+        return aBv;
+    }
+
+    public void setaBv(ArrayList<String> aBv) {
+        this.aBv = aBv;
+    }
+
+    public OnBeerListener getmOnBeerListener() {
+        return mOnBeerListener;
+    }
+
+    public void setmOnBeerListener(OnBeerListener mOnBeerListener) {
+        this.mOnBeerListener = mOnBeerListener;
+    }
 }

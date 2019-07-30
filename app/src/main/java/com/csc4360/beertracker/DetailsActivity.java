@@ -19,7 +19,9 @@ import androidx.fragment.app.FragmentTransaction;
 public class DetailsActivity extends AppCompatActivity implements NavigationHost {
 
     private static final String TAG = "DetailsActivity";
-    public static String EXTRA_BEER_ID = "beer_id";
+    // public static String EXTRA_BEER_ID = "beer_id";
+
+    public static String EXTRA_BEER_NAME = "beer_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +37,12 @@ public class DetailsActivity extends AppCompatActivity implements NavigationHost
         Fragment fragment = fragmentManager.findFragmentById(R.id.details_fragment_container);
 
         if (fragment == null) {
-            int beerId = getIntent().getIntExtra(EXTRA_BEER_ID, 1);
-            fragment = DetailsFragment.newInstance(beerId);
+            // int beerId = getIntent().getIntExtra(EXTRA_BEER_ID, 1);
+
+            String beerName = getIntent().getStringExtra(EXTRA_BEER_NAME);
+
+            // fragment = DetailsFragment.newInstance(beerId);
+            fragment = DetailsFragment.newInstance(beerName);
             fragmentManager.beginTransaction()
                     .add(R.id.details_fragment_container, fragment)
                     .commit();

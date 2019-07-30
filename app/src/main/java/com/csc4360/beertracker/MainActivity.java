@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 
@@ -26,6 +27,7 @@ import com.csc4360.beertracker.Controller.RecyclerViewAdapter;
 import com.csc4360.beertracker.Controller.SearchAdapter;
 import com.csc4360.beertracker.DatabaseModel.AppDatabase;
 import com.csc4360.beertracker.DatabaseModel.Beer;
+import com.csc4360.beertracker.DatabaseModel.BeerDao;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import java.util.ArrayList;
@@ -39,7 +41,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     public RecyclerView recyclerView;
     public static RecyclerViewAdapter adapter;
+
     private List<Beer> data;
+    private ArrayList<String> beerNames;
+    private ArrayList<String> breweryNames;
+    private ArrayList<String> beerTypes;
+    private ArrayList<String> aBv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,36 +63,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         appDatabase = AppDatabase.getDatabase(this);
         data = appDatabase.beerDao().getAllBeers();
 
-        // Data structures for organizing data on main recyclerView prepopulate
-        ArrayList<String> beerNames = new ArrayList<>(data.size());
-        ArrayList<String> breweryNames = new ArrayList<>(data.size());
-        ArrayList<String> beerTypes = new ArrayList<>(data.size());
-        ArrayList<String> aBv = new ArrayList<>(data.size());
-
-        for (int i = 0; i < data.size(); i++) {
-            Log.d(TAG, "ARRAYLISTS BEING POPULATED ...");
-
-            Beer beer = data.get(i);
-
-            beerNames.add(beer.getName());
-            breweryNames.add(beer.getBrewery());
-            beerTypes.add(beer.getType());
-            aBv.add(beer.getAbv());
-        }
-
-        // Data check
-        for (int i = 0; i < data.size(); i++) {
-            System.out.println(data.get(i).getBeer_id() + ", " + beerNames.get(i) + ", " + breweryNames.get(i)
-                    + ", " + beerTypes.get(i) + ", "  + aBv.get(i));
-            System.out.println("\n");
-        }
-
         // RecyclerView
-        Log.d(TAG, "initRecyclerView : init recyclerview...");
+        Log.d(TAG, "initRecyclerView : running ... ");
         recyclerView = findViewById(R.id.main_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerViewAdapter(beerNames, breweryNames, beerTypes,
-                aBv, this);
+        adapter = setData();
         recyclerView.setAdapter(adapter);
 
         // RecyclerView divider
@@ -105,13 +88,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                removeItem(position);
+
+                appDatabase.beerDao().delete(data.get(position));
+                data.remove(position);
+                adapter.notifyItemRemoved(position);
+                adapter.notifyItemRangeChanged(position, data.size());
+                updateAdapter();
+                // recyclerView.setAdapter(adapter);
+
                 Toast.makeText(MainActivity.this, "Beer deleted...", Toast.LENGTH_SHORT)
                         .show();
-
             }
         });
-
         helper.attachToRecyclerView(recyclerView);
 
 
@@ -125,6 +113,43 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 //
 //        initRecyclerView();
 //    }
+
+    public RecyclerViewAdapter setData() {
+
+        Log.d(TAG, "setData: DATA ... " + data);
+
+        for (int i = 0; i < 10; i++) {
+            if (data.size() < 10) {
+                data = appDatabase.beerDao().getAllBeers();
+                if (data.size() == 9) {
+                    Log.d(TAG, "setData: PRINT i ..." + i);
+                    break;
+                }
+            }
+        }
+
+        // Data structures for organizing data on main recyclerView prepopulate
+        beerNames = new ArrayList<>(data.size());
+        breweryNames = new ArrayList<>(data.size());
+        beerTypes = new ArrayList<>(data.size());
+        aBv = new ArrayList<>(data.size());
+
+        for (int i = 0; i < data.size(); i++) {
+            Beer beer = data.get(i);
+            beerNames.add(beer.getName());
+            breweryNames.add(beer.getBrewery());
+            beerTypes.add(beer.getType());
+            aBv.add(beer.getAbv());
+        }
+
+        // Creating new adapter
+        adapter = new RecyclerViewAdapter(beerNames, breweryNames, beerTypes, aBv,
+                this);
+
+        Log.d(TAG, "setData: ADAPTER = " + adapter);
+        return adapter;
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
             case R.id.delete_beer_action:
                 // User chose the "Delete" action
+         <<<<<<< deleteAll-dialog-popUp
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
@@ -161,6 +187,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         appDatabase.beerDao().deleteAll();
+                        data.clear();
+                        updateAdapter();
                     }
                 });
                 builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
@@ -181,20 +209,43 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         }
     }
-
-
-
+  
     @Override
     public void onBeerClick(int position) {
+
         Log.d(TAG, "onBeerClicked." + position);
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra(DetailsActivity.EXTRA_BEER_ID, position);
+        // intent.putExtra(DetailsActivity.EXTRA_BEER_ID, position);
+        // appDatabase = AppDatabase.getDatabase(this);
+        // setData();
+        updateAdapter();
+        intent.putExtra(DetailsActivity.EXTRA_BEER_NAME, data.get(position).getName());
         startActivity(intent);
     }
 
-    private void removeItem(int id) {
-        appDatabase.beerDao().delete(data.get(id));
+    public void updateAdapter() {
+        // Beer list
+        data = appDatabase.beerDao().getAllBeers();
+
+        // Data structures for organizing data on main recyclerView prepopulate
+        beerNames = new ArrayList<>(data.size());
+        breweryNames = new ArrayList<>(data.size());
+        beerTypes = new ArrayList<>(data.size());
+        aBv = new ArrayList<>(data.size());
+
+        for (int i = 0; i < data.size(); i++) {
+            Beer beer = data.get(i);
+            beerNames.add(beer.getName());
+            breweryNames.add(beer.getBrewery());
+            beerTypes.add(beer.getType());
+            aBv.add(beer.getAbv());
+        }
+        adapter.setBeerNames(beerNames);
+        adapter.setBreweryNames(breweryNames);
+        adapter.setBeerTypes(beerTypes);
+        adapter.setaBv(aBv);
+        adapter.setmOnBeerListener(this);
         adapter.notifyDataSetChanged();
-    }
+}
 
 }

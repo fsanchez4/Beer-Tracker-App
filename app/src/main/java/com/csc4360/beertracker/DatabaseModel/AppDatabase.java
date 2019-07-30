@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 @Database(entities = {Beer.class, Brewery.class, BeerTypes.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
+    private static String TAG = "AppDatabase";
     private static AppDatabase INSTANCE;
     private static final String DB_NAME = "atl_beer.db";
 
@@ -49,6 +50,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public void clearDb() {
         if (INSTANCE != null) {
+            Log.d(TAG, "clearDb: *******************");
             new PopulateDbAsync(INSTANCE).execute();
         }
     }
@@ -84,18 +86,17 @@ public abstract class AppDatabase extends RoomDatabase {
             System.out.println(Arrays.toString(preBeerTypeData));
 
             for (Beer beer : preBeerData) {
-                System.out.println("APPDATABASE :  POPULATING BEER DATA ...");
-
+                // System.out.println("APPDATABASE :  POPULATING BEER DATA ...");
                 beerDao.insert(beer);
             }
 
             for (Brewery brewery : preBreweryData) {
-                System.out.println("APPDATABASE :  POPULATING BREWERY DATA ...");
+                // System.out.println("APPDATABASE :  POPULATING BREWERY DATA ...");
                 breweryDao.insert(brewery);
             }
 
             for (BeerTypes beerType : preBeerTypeData) {
-                System.out.println("APPDATABASE : POPULATING TYPE DATA ...");
+                // System.out.println("APPDATABASE : POPULATING TYPE DATA ...");
                 beerTypesDao.insert(beerType);
             }
             return null;
