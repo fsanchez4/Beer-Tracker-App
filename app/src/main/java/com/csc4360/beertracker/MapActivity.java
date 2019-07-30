@@ -1,4 +1,6 @@
 package com.csc4360.beertracker;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -30,21 +32,17 @@ import com.google.android.gms.maps.CameraUpdate;
 import java.util.List;
 
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback, NavigationHost {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationHost {
 
     private final int REQUEST_LOCATION_PERMISSIONS = 0;
-
     private GoogleMap mMap;
     private FusedLocationProviderClient mClient;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
     private float mZoomLevel = 10;
-
     private Beer mBeer;
     private Brewery mBrewery;
     private List<Beer> data = MainActivity.data;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +54,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // Adding App Bar
+        Toolbar appToolbar = findViewById(R.id.appToolbar);
+        setSupportActionBar(appToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.map_container, new MapFragment())
+                    .commit();
+        }
 
         // Create location request
         mLocationRequest = new LocationRequest();
