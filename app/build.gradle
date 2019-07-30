@@ -55,4 +55,10 @@ dependencies {
     // readyState search
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     implementation 'com.github.mancj:MaterialSearchBar:0.8.2'
+
+    //Maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+
 }

@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/view_map_action"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="Map"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/search_beer_action"
         android:icon="@drawable/menu_search_icon"
         android:title="Search"

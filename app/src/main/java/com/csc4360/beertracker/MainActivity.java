@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     public RecyclerView recyclerView;
     public static RecyclerViewAdapter adapter;
-    private List<Beer> data;
+    public static List<Beer> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +135,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.view_map_action:
+                startActivity(new Intent(MainActivity.this, MapActivity.class));
+                return true;
+
             case R.id.search_beer_action:
                 Toast.makeText(this, "Search option selected...", Toast.LENGTH_SHORT)
                         .show();
