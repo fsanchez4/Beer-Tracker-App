@@ -22,7 +22,7 @@ public class splashScreen extends AppCompatActivity {
                 splashScreen.this.startActivities();
                 splashScreen.this.finish();
             }
-        },4750);
+        },5000);
     }
 
     //method to open the main activity page
