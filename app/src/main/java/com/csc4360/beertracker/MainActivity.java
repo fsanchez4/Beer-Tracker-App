@@ -78,9 +78,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             @Override
             public void run() {
                     //Pull in list of address from DB
-                    String[] addressListFromDB = appDatabase.breweryDao().getAllAddresses();
+                String[] nameListFromDB = appDatabase.breweryDao().getAllBreweryNames();
+                String[] addressListFromDB = appDatabase.breweryDao().getAllAddresses();
 
-                    //Use geocoder to return list of addressFromGeocoder which contain coordinate information
+
+                //Use geocoder to return list of addressFromGeocoder which contain coordinate information
                     Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.US);
 
                     //List of type address that is returned from geocoder
@@ -107,6 +109,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                     mBreweryMarkers = new ArrayList<>(coordinatesList.size());
                     for (LatLng l : coordinatesList) {
                         mBreweryMarkers.add(new MarkerOptions().title("Fix This Later!").position(l));
+                    }
+                    for(int i=0;i<mBreweryMarkers.size();i++){
+                        mBreweryMarkers.get(i).title(nameListFromDB[i]);
                     }
                     for (MarkerOptions m : mBreweryMarkers) {
                         System.out.println("-------------MARKER CHECK COORDINATES------------------" + m.getPosition().toString());
