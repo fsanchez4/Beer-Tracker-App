@@ -37,6 +37,19 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:clickable="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:numStars="5"
+            android:stepSize="0.5" />
+
         <TextView
             android:id="@+id/breweryName_textView"
             android:layout_width="wrap_content"
