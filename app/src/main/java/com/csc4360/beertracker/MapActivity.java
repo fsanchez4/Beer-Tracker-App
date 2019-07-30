@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,11 +26,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
-
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationHost {
 
@@ -42,7 +36,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
     private float mZoomLevel = 10;
-    private List<MarkerOptions> mBreweryMarkers = null;
+    private List<MarkerOptions> mBreweryMarkers = MainActivity.mBreweryMarkers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,88 +79,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         };
 
         mClient = LocationServices.getFusedLocationProviderClient(this);
-
-//        Thread getMapData = new Thread(new Runnable(){
-//            @Override
-//            public void run(){
-//                //Pull in list of address from DB
-//                String[] addressListFromDB = MainActivity.appDatabase.breweryDao().getAllAddresses();
-//
-//                //Use geocoder to return list of addressFromGeocoder which contain coordinate information
-//                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.US);
-//
-//                //List of type address that is returned from geocoder
-//                List<Address> addressFromGeocoder;
-//
-//                //Temporary variables
-//                LatLng tempCoordinates;
-//                List<LatLng> coordinatesList = new ArrayList<>();
-//
-//                //For each address in the DB, get the full geocoder returned address
-//                for(int i=0;i<addressListFromDB.length;i++) {
-//                    try {
-//                        addressFromGeocoder = geocoder.getFromLocationName(addressListFromDB[i], 1);
-//                        tempCoordinates = new LatLng(addressFromGeocoder.get(0).getLatitude(),addressFromGeocoder.get(0).getLongitude());
-//                        coordinatesList.add(tempCoordinates);
-//                        System.out.println("--------------INIT COORDINATE PULL---------------------------" + tempCoordinates);
-//
-//                    }
-//                    catch(Exception e){
-//                        System.out.println(e);
-//                    }
-//                }
-//
-//                //Create list of markers from brewery coordinates
-//                mBreweryMarkers = new ArrayList<>(coordinatesList.size());
-//                for(LatLng l: coordinatesList){
-//                    mBreweryMarkers.add(new MarkerOptions().title("Fix This Later!").position(l));
-//                }
-//                for(MarkerOptions m: mBreweryMarkers){
-//                    System.out.println("-------------MARKER CHECK COORDINATES------------------" + m.getPosition().toString());
-//                }
-//            }
-//        });
-//        getMapData.start();
-
-
-
-        //Pull in list of address from DB
-        String[] addressListFromDB = MainActivity.appDatabase.breweryDao().getAllAddresses();
-
-        //Use geocoder to return list of addressFromGeocoder which contain coordinate information
-        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.US);
-
-        //List of type address that is returned from geocoder
-        List<Address> addressFromGeocoder;
-
-        //Temporary variables
-        LatLng tempCoordinates;
-        List<LatLng> coordinatesList = new ArrayList<>();
-
-        //For each address in the DB, get the full geocoder returned address
-        for(int i=0;i<addressListFromDB.length;i++) {
-            try {
-                addressFromGeocoder = geocoder.getFromLocationName(addressListFromDB[i], 1);
-                tempCoordinates = new LatLng(addressFromGeocoder.get(0).getLatitude(),addressFromGeocoder.get(0).getLongitude());
-                coordinatesList.add(tempCoordinates);
-                System.out.println("--------------INIT COORDINATE PULL---------------------------" + tempCoordinates);
-
-            }
-            catch(Exception e){
-                System.out.println(e);
-            }
-        }
-
-        //Create list of markers from brewery coordinates
-        mBreweryMarkers = new ArrayList<>(coordinatesList.size());
-        for(LatLng l: coordinatesList){
-            mBreweryMarkers.add(new MarkerOptions().title("Fix This Later!").position(l));
-        }
-        for(MarkerOptions m: mBreweryMarkers){
-            System.out.println("-------------MARKER CHECK COORDINATES------------------" + m.getPosition().toString());
-        }
-
-//        setBreweryCoordinates(mBreweryMarkers);
     }
 
     @Override
@@ -192,12 +104,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    private void setBreweryCoordinates(List<MarkerOptions> markersToSet){
-        for(MarkerOptions m: markersToSet){
-            mMap.addMarker(m);
-            System.out.println("00000000000000000000000000000000000000-ADDED COORDINATE: "+ m.getPosition().toString());
-        }
-    }
+
     private void updateMap(Location location) {
         // TODO: Show user's location on the map
 
@@ -222,8 +129,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         setBreweryCoordinates(mBreweryMarkers);
 
-
         onPause();
+
+    }
+
+    private void setBreweryCoordinates(List<MarkerOptions> markersToSet){
+        for(MarkerOptions m: markersToSet){
+            mMap.addMarker(m);
+            System.out.println("00000000000000000000000000000000000000-ADDED COORDINATE: "+ m.getPosition().toString());
+        }
     }
 
     @Override

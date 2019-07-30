@@ -7,27 +7,23 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
-import android.telecom.Call;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
-
-
 import com.csc4360.beertracker.Controller.RecyclerViewAdapter;
-import com.csc4360.beertracker.Controller.SearchAdapter;
 import com.csc4360.beertracker.DatabaseModel.AppDatabase;
 import com.csc4360.beertracker.DatabaseModel.Beer;
-import com.mancj.materialsearchbar.MaterialSearchBar;
-
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnBeerListener{
 
@@ -38,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public RecyclerView recyclerView;
     public static RecyclerViewAdapter adapter;
     public static List<Beer> data;
+    public static List<MarkerOptions> mBreweryMarkers = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +73,47 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                     + ", " + beerTypes.get(i) + ", "  + aBv.get(i));
             System.out.println("\n");
         }
+
+        Thread getMapData = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                    //Pull in list of address from DB
+                    String[] addressListFromDB = appDatabase.breweryDao().getAllAddresses();
+
+                    //Use geocoder to return list of addressFromGeocoder which contain coordinate information
+                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.US);
+
+                    //List of type address that is returned from geocoder
+                    List<Address> addressFromGeocoder;
+
+                    //Temporary variables
+                    LatLng tempCoordinates;
+                    List<LatLng> coordinatesList = new ArrayList<>();
+
+                    //For each address in the DB, get the full geocoder returned address
+                    for (int i = 0; i < addressListFromDB.length; i++) {
+                        try {
+                            addressFromGeocoder = geocoder.getFromLocationName(addressListFromDB[i], 1);
+                            tempCoordinates = new LatLng(addressFromGeocoder.get(0).getLatitude(), addressFromGeocoder.get(0).getLongitude());
+                            coordinatesList.add(tempCoordinates);
+                            System.out.println("--------------INIT COORDINATE PULL---------------------------" + tempCoordinates);
+
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
+                    }
+
+                    //Create list of markers from brewery coordinates
+                    mBreweryMarkers = new ArrayList<>(coordinatesList.size());
+                    for (LatLng l : coordinatesList) {
+                        mBreweryMarkers.add(new MarkerOptions().title("Fix This Later!").position(l));
+                    }
+                    for (MarkerOptions m : mBreweryMarkers) {
+                        System.out.println("-------------MARKER CHECK COORDINATES------------------" + m.getPosition().toString());
+                    }
+                }
+        });
+        getMapData.start();
 
         // RecyclerView
         Log.d(TAG, "initRecyclerView : init recyclerview...");
