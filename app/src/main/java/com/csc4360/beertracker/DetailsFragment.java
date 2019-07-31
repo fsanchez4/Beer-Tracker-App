@@ -1,6 +1,8 @@
 package com.csc4360.beertracker;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.csc4360.beertracker.Controller.RecyclerViewAdapter;
@@ -18,6 +21,8 @@ import com.csc4360.beertracker.DatabaseModel.Beer;
 import com.csc4360.beertracker.DatabaseModel.BeerTypes;
 import com.csc4360.beertracker.DatabaseModel.Brewery;
 import com.csc4360.beertracker.DatabaseModel.BreweryAddress;
+
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -32,7 +37,6 @@ public class DetailsFragment extends Fragment {
     private Beer mBeer;
     private Brewery mBrewery;
     private BeerTypes mBeerType;
-    public RecyclerViewAdapter adapter;
 
 //    public static DetailsFragment newInstance(int beerId) {
 //        // Required empty public constructor
@@ -91,7 +95,13 @@ public class DetailsFragment extends Fragment {
         // Beer Info
 
         CircleImageView beerImage = view.findViewById(R.id.testImage);
-        beerImage.setImageResource(R.mipmap.ic_launcher);
+
+        if (isNumeric(mBeer.getBeerImage())) {
+            beerImage.setImageResource(Integer.valueOf(mBeer.getBeerImage()));
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeFile(mBeer.getBeerImage());
+            beerImage.setImageBitmap(bitmap);
+        }
 
         TextView beerNameTextView = view.findViewById(R.id.beerName_textView);
         beerNameTextView.setText(mBeer.getName());
@@ -104,6 +114,9 @@ public class DetailsFragment extends Fragment {
 
         TextView beerAbvTextView = view.findViewById(R.id.abv_textView);
         beerAbvTextView.setText(mBeer.getAbv());
+
+        RatingBar beerRatingBar = view.findViewById(R.id.ratingBar);
+        beerRatingBar.setRating(mBeer.getRating());
 
         // Type Info
 
@@ -147,6 +160,15 @@ public class DetailsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public static boolean isNumeric(String strNum) {
+        try {
+            int i = Integer.parseInt(strNum);
+        } catch (NumberFormatException | NullPointerException nfe) {
+            return false;
+        }
+        return true;
     }
 
 }

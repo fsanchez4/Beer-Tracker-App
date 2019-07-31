@@ -9,8 +9,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telecom.Call;
 import android.text.Editable;
@@ -30,6 +35,10 @@ import com.csc4360.beertracker.DatabaseModel.Beer;
 import com.csc4360.beertracker.DatabaseModel.BeerDao;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private ArrayList<String> breweryNames;
     private ArrayList<String> beerTypes;
     private ArrayList<String> aBv;
+    private ArrayList<Float> beerRatings;
+    private ArrayList<String> beerImages;
 
 
     @Override
@@ -68,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         recyclerView = findViewById(R.id.main_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = setData();
+        // new ItemTouchHelper().attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(adapter);
 
         // RecyclerView divider
@@ -79,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         // OnSwipe Delete
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
                                   @NonNull RecyclerView.ViewHolder target) {
@@ -102,17 +115,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         });
         helper.attachToRecyclerView(recyclerView);
 
-
-        //initImageBitmaps();
-
     }
-
-    // Method for adding pictures
-//    private void initImageBitmaps() {
-//        Log.d(TAG, "initImageBitmaps : preparing bitmaps...)");
-//
-//        initRecyclerView();
-//    }
 
     public RecyclerViewAdapter setData() {
 
@@ -133,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         breweryNames = new ArrayList<>(data.size());
         beerTypes = new ArrayList<>(data.size());
         aBv = new ArrayList<>(data.size());
+        beerRatings = new ArrayList<>(data.size());
+        beerImages = new ArrayList<>(data.size());
 
         for (int i = 0; i < data.size(); i++) {
             Beer beer = data.get(i);
@@ -140,11 +145,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             breweryNames.add(beer.getBrewery());
             beerTypes.add(beer.getType());
             aBv.add(beer.getAbv());
+            beerRatings.add(beer.getRating());
+            beerImages.add(beer.getBeerImage());
         }
 
         // Creating new adapter
         adapter = new RecyclerViewAdapter(beerNames, breweryNames, beerTypes, aBv,
-                this);
+                beerRatings, beerImages, this);
 
         Log.d(TAG, "setData: ADAPTER = " + adapter);
         return adapter;
@@ -177,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
             case R.id.delete_beer_action:
                 // User chose the "Delete" action
-         <<<<<<< deleteAll-dialog-popUp
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
@@ -232,6 +238,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         breweryNames = new ArrayList<>(data.size());
         beerTypes = new ArrayList<>(data.size());
         aBv = new ArrayList<>(data.size());
+        beerRatings = new ArrayList<>(data.size());
+        beerImages = new ArrayList<>(data.size());
 
         for (int i = 0; i < data.size(); i++) {
             Beer beer = data.get(i);
@@ -239,13 +247,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             breweryNames.add(beer.getBrewery());
             beerTypes.add(beer.getType());
             aBv.add(beer.getAbv());
+            beerRatings.add(beer.getRating());
+            beerImages.add(beer.getBeerImage());
+
         }
         adapter.setBeerNames(beerNames);
         adapter.setBreweryNames(breweryNames);
         adapter.setBeerTypes(beerTypes);
         adapter.setaBv(aBv);
+        adapter.setBeerRatings(beerRatings);
+        adapter.setBeerImages(beerImages);
         adapter.setmOnBeerListener(this);
         adapter.notifyDataSetChanged();
-}
+    }
 
 }

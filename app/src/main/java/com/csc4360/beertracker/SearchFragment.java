@@ -1,6 +1,7 @@
 package com.csc4360.beertracker;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,31 +11,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.csc4360.beertracker.Controller.SearchAdapter;
-import com.csc4360.beertracker.DatabaseModel.AppDatabase;
+import com.csc4360.beertracker.DatabaseModel.Beer;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.csc4360.beertracker.MainActivity.appDatabase;
-
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements SearchAdapter.OnBeerListener {
 
     // For Material Search Bar
     private RecyclerView recyclerView;
     private SearchAdapter searchAdapter;
     private MaterialSearchBar materialSearchBar;
     private List<String> suggestList = new ArrayList<>();
+
+    // Data
+    private Beer beer;
 
     // private static AppDatabase appDatabase;
 
@@ -112,7 +113,8 @@ public class SearchFragment extends Fragment {
         });
 
         // Init adapter default set all result
-        searchAdapter = new SearchAdapter(this.getActivity(), MainActivity.appDatabase.beerDao().getAllBeers());
+        searchAdapter = new SearchAdapter(this.getActivity(), MainActivity.appDatabase.beerDao().getAllBeers(),
+                this);
         recyclerView.setAdapter(searchAdapter);
 
         return view;
@@ -122,7 +124,7 @@ public class SearchFragment extends Fragment {
     private void startSearch(String text) {
 
         searchAdapter = new SearchAdapter(this.getActivity(),
-                MainActivity.appDatabase.beerDao().getBeerByName(text));
+                MainActivity.appDatabase.beerDao().getBeerByName(text), this);
         recyclerView.setAdapter(searchAdapter);
     }
 
@@ -133,4 +135,12 @@ public class SearchFragment extends Fragment {
 
     }
 
+    @Override
+    public void onBeerClick(String searchName) {
+        beer = MainActivity.appDatabase.beerDao().getBeerByStringName(searchName);
+        Intent intent = new Intent(getActivity(), DetailsActivity.class);
+        intent.putExtra(DetailsActivity.EXTRA_BEER_NAME, beer.getName());
+        startActivity(intent);
+    }
 }
+
