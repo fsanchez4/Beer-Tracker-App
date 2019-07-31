@@ -67,6 +67,7 @@ public class AddBeer extends AppCompatActivity implements NavigationHost {
                 Toast.makeText(this, "Search option selected...", Toast.LENGTH_SHORT)
                         .show();
                 // User chose the "Search" item, show search bar
+                startActivity(new Intent(AddBeer.this, SearchActivity.class));
                 return true;
 
             case R.id.add_beer_action:
