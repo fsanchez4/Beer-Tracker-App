@@ -12,20 +12,16 @@ import java.util.List;
 @Dao
 public interface BreweryDao {
 
-//    @Query("SELECT * FROM breweries WHERE id=:id LIMIT 1")
-//    Brewery findBreweryById(int id);
-
-//    @Query("SELECT * FROM breweries WHERE brewery_id")
-//    int getBeerId();
-//
-//    @Query("SELECT * FROM breweries ORDER BY brewery_name ASC")
-//    List<Brewery> getAllBreweries();
-//
-//    @Query("SELECT brewery_name FROM breweries")
-//    String[] getBreweryNames();
+    @Query("SELECT brewery_name FROM breweries")
+    String[] getAllBreweryNames();
 
     @Query("SELECT * FROM breweries WHERE brewery_name=:breweryName")
     Brewery getBrewery(String breweryName);
+
+    @Query("SELECT brewery_address FROM breweries")
+    String[] getAllAddresses();
+//    List<String> getAllAddresses();
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Brewery brewery);

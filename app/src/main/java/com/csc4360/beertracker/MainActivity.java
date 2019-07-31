@@ -9,38 +9,30 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ContextWrapper;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
+
 import android.os.Bundle;
-import android.telecom.Call;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
-
 import com.csc4360.beertracker.Controller.RecyclerViewAdapter;
-import com.csc4360.beertracker.Controller.SearchAdapter;
 import com.csc4360.beertracker.DatabaseModel.AppDatabase;
 import com.csc4360.beertracker.DatabaseModel.Beer;
-import com.csc4360.beertracker.DatabaseModel.BeerDao;
-import com.mancj.materialsearchbar.MaterialSearchBar;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnBeerListener{
 
@@ -51,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public RecyclerView recyclerView;
     public static RecyclerViewAdapter adapter;
 
-    private List<Beer> data;
+    public static List<Beer> data;
+    public static List<MarkerOptions> mBreweryMarkers = null;
+
     private ArrayList<String> beerNames;
     private ArrayList<String> breweryNames;
     private ArrayList<String> beerTypes;
@@ -59,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private ArrayList<Float> beerRatings;
     private ArrayList<String> beerImages;
 
-
+  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +67,59 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         // AppDatabase
         appDatabase = AppDatabase.getDatabase(this);
         data = appDatabase.beerDao().getAllBeers();
+
+        // Data check
+//         for (int i = 0; i < data.size(); i++) {
+//             System.out.println(data.get(i).getBeer_id() + ", " + beerNames.get(i) + ", " + breweryNames.get(i)
+//                     + ", " + beerTypes.get(i) + ", "  + aBv.get(i));
+//             System.out.println("\n");
+//         }
+
+        Thread getMapData = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                    //Pull in list of address from DB
+                String[] nameListFromDB = appDatabase.breweryDao().getAllBreweryNames();
+                String[] addressListFromDB = appDatabase.breweryDao().getAllAddresses();
+
+
+                //Use geocoder to return list of addressFromGeocoder which contain coordinate information
+                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.US);
+
+                    //List of type address that is returned from geocoder
+                    List<Address> addressFromGeocoder;
+
+                    //Temporary variables
+                    LatLng tempCoordinates;
+                    List<LatLng> coordinatesList = new ArrayList<>();
+
+                    //For each address in the DB, get the full geocoder returned address
+                    for (int i = 0; i < addressListFromDB.length; i++) {
+                        try {
+                            addressFromGeocoder = geocoder.getFromLocationName(addressListFromDB[i], 1);
+                            tempCoordinates = new LatLng(addressFromGeocoder.get(0).getLatitude(), addressFromGeocoder.get(0).getLongitude());
+                            coordinatesList.add(tempCoordinates);
+                            System.out.println("--------------INIT COORDINATE PULL---------------------------" + tempCoordinates);
+
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
+                    }
+
+                    //Create list of markers from brewery coordinates
+                    mBreweryMarkers = new ArrayList<>(coordinatesList.size());
+                    for (LatLng l : coordinatesList) {
+                        mBreweryMarkers.add(new MarkerOptions().title("Fix This Later!").position(l));
+                    }
+                    for(int i=0;i<mBreweryMarkers.size();i++){
+                        mBreweryMarkers.get(i).title(nameListFromDB[i]);
+                    }
+                    for (MarkerOptions m : mBreweryMarkers) {
+                        System.out.println("-------------MARKER CHECK COORDINATES------------------" + m.getPosition().toString());
+                    }
+                }
+        });
+        getMapData.start();
 
         // RecyclerView
         Log.d(TAG, "initRecyclerView : running ... ");
@@ -169,6 +216,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.view_map_action:
+                startActivity(new Intent(MainActivity.this, MapActivity.class));
+                return true;
+
             case R.id.search_beer_action:
                 Toast.makeText(this, "Search option selected...", Toast.LENGTH_SHORT)
                         .show();
