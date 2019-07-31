@@ -1,7 +1,6 @@
 package com.csc4360.beertracker.Controller;
 
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -14,19 +13,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.csc4360.beertracker.DatabaseModel.AppDatabase;
-import com.csc4360.beertracker.DatabaseModel.Beer;
-import com.csc4360.beertracker.MainActivity;
 import com.csc4360.beertracker.R;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static androidx.test.InstrumentationRegistry.getContext;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 

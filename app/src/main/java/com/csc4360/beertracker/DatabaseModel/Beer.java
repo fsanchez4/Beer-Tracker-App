@@ -4,13 +4,9 @@ package com.csc4360.beertracker.DatabaseModel;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity(tableName = "beers", indices = {@Index(value = "beer_name", unique = true),
         @Index(value = "beer_mfg"), @Index(value = "beer_type")})
