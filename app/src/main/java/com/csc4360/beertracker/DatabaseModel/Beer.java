@@ -35,6 +35,12 @@ public class Beer {
     @ColumnInfo(name = "alcohol_content")
     private String abv;
 
+    @ColumnInfo(name = "beer_rating")
+    private float rating;
+
+    @ColumnInfo(name = "beer_img")
+    private String beerImage;
+
     // Empty constructor
     public Beer(){
         // Required empty constructor
@@ -42,11 +48,14 @@ public class Beer {
 
     // Constructor for populating table data
     @Ignore
-    public Beer(@NonNull String name, String brewery, String type, String abv) {
+    public Beer(@NonNull String name, String brewery, String type, String abv, float rating,
+                String beerImage) {
         this.name = name;
         this.brewery = brewery;
         this.type = type;
         this.abv = abv;
+        this.rating = rating;
+        this.beerImage = beerImage;
     }
 
 
@@ -91,6 +100,22 @@ public class Beer {
 
     public void setAbv(String abv) {
         this.abv = abv;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public String getBeerImage() {
+        return beerImage;
+    }
+
+    public void setBeerImage(String beerImage) {
+        this.beerImage = beerImage;
     }
 }
 

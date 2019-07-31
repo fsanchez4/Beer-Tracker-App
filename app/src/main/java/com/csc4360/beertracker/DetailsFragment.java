@@ -1,21 +1,28 @@
 package com.csc4360.beertracker;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.csc4360.beertracker.Controller.RecyclerViewAdapter;
 import com.csc4360.beertracker.DatabaseModel.AppDatabase;
 import com.csc4360.beertracker.DatabaseModel.Beer;
 import com.csc4360.beertracker.DatabaseModel.BeerTypes;
 import com.csc4360.beertracker.DatabaseModel.Brewery;
 import com.csc4360.beertracker.DatabaseModel.BreweryAddress;
+
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -25,16 +32,27 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class DetailsFragment extends Fragment {
 
+    private static final String TAG = "DetailsFragment.beerId";
+
     private Beer mBeer;
     private Brewery mBrewery;
     private BeerTypes mBeerType;
 
-    public static DetailsFragment newInstance(int beerId) {
-        // Required empty public constructor
+//    public static DetailsFragment newInstance(int beerId) {
+//        // Required empty public constructor
+//
+//        DetailsFragment fragment = new DetailsFragment();
+//        Bundle args = new Bundle();
+//        args.putInt("beer_id", beerId);
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
+
+    public static DetailsFragment newInstance(String beerName) {
 
         DetailsFragment fragment = new DetailsFragment();
         Bundle args = new Bundle();
-        args.putInt("beer_id", beerId);
+        args.putString("beer_name", beerName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,14 +60,22 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int beerId = 1;
+//        int beerId = 1;
+//
+//        if (getArguments() != null) {
+//            beerId = getArguments().getInt("beer_id");
+//        }
+
+        String beerName = "";
 
         if (getArguments() != null) {
-            beerId = getArguments().getInt("beer_id");
+            beerName = getArguments().getString("beer_name");
         }
 
+        Log.d(TAG, "onCreate : " + beerName);
+
         try {
-            mBeer = MainActivity.appDatabase.beerDao().getBeer(beerId);
+            mBeer = MainActivity.appDatabase.beerDao().getBeerByStringName(beerName);
             System.out.println(mBeer.getName());
             mBrewery = MainActivity.appDatabase.breweryDao().getBrewery(mBeer.getBrewery());
             System.out.println(mBrewery.getBreweryName());
@@ -69,7 +95,13 @@ public class DetailsFragment extends Fragment {
         // Beer Info
 
         CircleImageView beerImage = view.findViewById(R.id.testImage);
-        beerImage.setImageResource(R.mipmap.ic_launcher);
+
+        if (isNumeric(mBeer.getBeerImage())) {
+            beerImage.setImageResource(Integer.valueOf(mBeer.getBeerImage()));
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeFile(mBeer.getBeerImage());
+            beerImage.setImageBitmap(bitmap);
+        }
 
         TextView beerNameTextView = view.findViewById(R.id.beerName_textView);
         beerNameTextView.setText(mBeer.getName());
@@ -82,6 +114,9 @@ public class DetailsFragment extends Fragment {
 
         TextView beerAbvTextView = view.findViewById(R.id.abv_textView);
         beerAbvTextView.setText(mBeer.getAbv());
+
+        RatingBar beerRatingBar = view.findViewById(R.id.ratingBar);
+        beerRatingBar.setRating(mBeer.getRating());
 
         // Type Info
 
@@ -125,6 +160,15 @@ public class DetailsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public static boolean isNumeric(String strNum) {
+        try {
+            int i = Integer.parseInt(strNum);
+        } catch (NumberFormatException | NullPointerException nfe) {
+            return false;
+        }
+        return true;
     }
 
 }

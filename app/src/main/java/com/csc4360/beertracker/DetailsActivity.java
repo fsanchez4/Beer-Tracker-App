@@ -1,6 +1,8 @@
 package com.csc4360.beertracker;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +19,9 @@ import androidx.fragment.app.FragmentTransaction;
 public class DetailsActivity extends AppCompatActivity implements NavigationHost {
 
     private static final String TAG = "DetailsActivity";
-    public static String EXTRA_BEER_ID = "beer_id";
+    // public static String EXTRA_BEER_ID = "beer_id";
+
+    public static String EXTRA_BEER_NAME = "beer_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +37,12 @@ public class DetailsActivity extends AppCompatActivity implements NavigationHost
         Fragment fragment = fragmentManager.findFragmentById(R.id.details_fragment_container);
 
         if (fragment == null) {
-            int beerId = getIntent().getIntExtra(EXTRA_BEER_ID, 1);
-            fragment = DetailsFragment.newInstance(beerId);
+            // int beerId = getIntent().getIntExtra(EXTRA_BEER_ID, 1);
+
+            String beerName = getIntent().getStringExtra(EXTRA_BEER_NAME);
+
+            // fragment = DetailsFragment.newInstance(beerId);
+            fragment = DetailsFragment.newInstance(beerName);
             fragmentManager.beginTransaction()
                     .add(R.id.details_fragment_container, fragment)
                     .commit();
@@ -86,7 +94,26 @@ public class DetailsActivity extends AppCompatActivity implements NavigationHost
 
             case R.id.delete_beer_action:
                 // User chose the "Delete" action
-                MainActivity.appDatabase.beerDao().deleteAll();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(DetailsActivity.this);
+
+                builder.setTitle("Warning!");
+                builder.setMessage("Are you sure you want to delete everything?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        MainActivity.appDatabase.beerDao().deleteAll();
+                    }
+                });
+                builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
 
             default:

@@ -1,8 +1,12 @@
 package com.csc4360.beertracker;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,6 +14,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -69,7 +75,25 @@ public class AddBeer extends AppCompatActivity implements NavigationHost {
 
             case R.id.delete_beer_action:
                 // User chose the "Delete" action
-                MainActivity.appDatabase.beerDao().deleteAll();
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddBeer.this);
+
+                builder.setTitle("Warning!");
+                builder.setMessage("Are you sure you want to delete everything?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        MainActivity.appDatabase.beerDao().deleteAll();
+                    }
+                });
+                builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
 
             default:
@@ -79,4 +103,45 @@ public class AddBeer extends AppCompatActivity implements NavigationHost {
 
         }
     }
+
+//    public static boolean hasPermissions(final Activity activity, final String permission,
+//                                         String rationaleMessageId, final int requestWriteCode) {
+//        // See if permission is granted
+//        if (ContextCompat.checkSelfPermission(activity, permission)
+//                != PackageManager.PERMISSION_GRANTED) {
+//
+//            // Explain why permission needed?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+//
+//                // Beg for permission
+//                showPermissionRationaleDialog(activity, rationaleMessageId, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                        // Request permission again
+//                        ActivityCompat.requestPermissions(activity,
+//                                new String[] { permission }, requestWriteCode);
+//                    }
+//                });
+//            }
+//            else {
+//                // Request permission
+//                ActivityCompat.requestPermissions(activity,
+//                        new String[] { permission }, requestWriteCode);
+//            }
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//    private static void showPermissionRationaleDialog(Activity activity, String message,
+//                                                      DialogInterface.OnClickListener onClickListener) {
+//        // Show dialog explaining why permission is needed
+//        new AlertDialog.Builder(activity)
+//                .setTitle("Permission Needed")
+//                .setMessage(message)
+//                .setPositiveButton("OK", onClickListener)
+//                .create()
+//                .show();
+//    }
 }

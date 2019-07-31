@@ -1,7 +1,16 @@
 package com.csc4360.beertracker.DatabaseModel;
 
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -10,15 +19,31 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.csc4360.beertracker.MainActivity;
+import com.csc4360.beertracker.R;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import static android.content.Context.MODE_PRIVATE;
+import static android.graphics.Bitmap.CompressFormat.PNG;
+import static androidx.test.InstrumentationRegistry.getContext;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
-@Database(entities = {Beer.class, Brewery.class, BeerTypes.class}, version = 1, exportSchema = false)
+
+@Database(entities = {Beer.class, Brewery.class, BeerTypes.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
+    private static String TAG = "AppDatabase";
     private static AppDatabase INSTANCE;
     private static final String DB_NAME = "atl_beer.db";
 
@@ -49,6 +74,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public void clearDb() {
         if (INSTANCE != null) {
+            Log.d(TAG, "clearDb: *******************");
             new PopulateDbAsync(INSTANCE).execute();
         }
     }
@@ -84,18 +110,17 @@ public abstract class AppDatabase extends RoomDatabase {
             System.out.println(Arrays.toString(preBeerTypeData));
 
             for (Beer beer : preBeerData) {
-                System.out.println("APPDATABASE :  POPULATING BEER DATA ...");
-
+                // System.out.println("APPDATABASE :  POPULATING BEER DATA ...");
                 beerDao.insert(beer);
             }
 
             for (Brewery brewery : preBreweryData) {
-                System.out.println("APPDATABASE :  POPULATING BREWERY DATA ...");
+                // System.out.println("APPDATABASE :  POPULATING BREWERY DATA ...");
                 breweryDao.insert(brewery);
             }
 
             for (BeerTypes beerType : preBeerTypeData) {
-                System.out.println("APPDATABASE : POPULATING TYPE DATA ...");
+                // System.out.println("APPDATABASE : POPULATING TYPE DATA ...");
                 beerTypesDao.insert(beerType);
             }
             return null;
@@ -104,25 +129,30 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static Beer[] populateBeerData() {
 
+        int[] temp = {R.drawable.rapturous, R.drawable.lord_grey, R.drawable.a_night_on_ponce,
+                        R.drawable.transmigration_of_souls, R.drawable.the_ferryman,
+                        R.drawable.class_city_lager, R.drawable.everything_is, R.drawable.tropicalia,
+                        R.drawable.cosmik_debris};
+
         return new Beer[]{
                 new Beer("Rapturous", "Three Taverns", "Sour Ale",
-                        "5%"),
+                        "5%", 5, String.valueOf(temp[0])),
                 new Beer("Lord Gray", "Three Taverns", "Sour Ale",
-                        "5%"),
+                        "5%", 5, String.valueOf(temp[1])),
                 new Beer("A Night On Ponce", "Three Taverns", "IPA",
-                        "7.5%"),
+                        "7.5%", (float) 4.5, String.valueOf(temp[2])),
                 new Beer("Transmigration of Souls", "Orpheus", "IPA",
-                        "8%"),
-                new Beer("The Ferryman", "Orpheus", "Stout", "11.8%"),
-
-                new Beer("Classic City Lager", "Creature Comforts",
-                        "Pale Lager & Pilsner", "4.2%"),
-                new Beer("Everything Is...", "Creature Comforts",
-                        "Pale Lager & Pilsner", "5.2%"),
+                        "8%", (float)3.5, String.valueOf(temp[3])),
+                new Beer("The Ferryman", "Orpheus", "Stout", "11.8%",
+                        (float)4.5, String.valueOf(temp[4])),
+                new Beer("Classic City Lager", "Creature Comforts","Pale Lager & Pilsner",
+                        "4.2%", 3, String.valueOf(temp[5])),
+                new Beer("Everything Is...", "Creature Comforts", "Pale Lager & Pilsner", "5.2%",
+                        (float)3.5, String.valueOf(temp[6])),
                 new Beer("Tropicalia", "Creature Comforts", "IPA",
-                        "6.6%"),
+                        "6.6%", 4, String.valueOf(temp[7])),
                 new Beer("Cosmik Debris", "Creature Comforts", "IPA",
-                        "8%")
+                        "8%", 4, String.valueOf(temp[8]))
         };
     }
 
